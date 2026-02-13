@@ -1,0 +1,67 @@
+# Swift Package Manager
+.DS_Store
+/.build
+/Packages
+/*.xcodeproj
+xcuserdata/
+DerivedData/
+.swiftpm/
+.build/
+*.resolved
+
+# Swift
+*.swiftpm
+*.xcodeproj
+*.xcworkspace
+*.xcuserstate
+
+# CocoaPods
+Pods/
+
+# Carthage
+Carthage/
+
+# Fastlane
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/screenshots
+fastlane/test_output
+
+# Temporary files
+*.orig
+*.swp
+*~
+.DS_Store
+._*
+
+# Build artifacts
+*.o
+*.a
+*.dylib
+*.framework
+*.ipa
+*.dSYM.zip
+*.dSYM
+
+# Profiling data
+*.profdata
+*.profraw
+
+# Logs
+logs/
+*.log
+
+# Local configuration
+*.local.*
+.env
+.env.local
+
+# Xcode
+*.xccheckout
+*.xcscmblueprint
+*.xcuserstate
+*.xcsettings
+*.mode1v3
+*.mode2v3
+*.perspectivev3
+*.pbxuser

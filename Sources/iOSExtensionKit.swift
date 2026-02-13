@@ -2,8 +2,14 @@
 // iOSExtensionKit框架的主入口点
 
 import Foundation
+
+#if canImport(UIKit)
 import UIKit
+#endif
+
+#if canImport(SwiftUI)
 import SwiftUI
+#endif
 
 /// iOSExtensionKit的主要命名空间
 public enum iOSExtensionKit {

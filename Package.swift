@@ -24,15 +24,21 @@ let package = Package(
             name: "iOSExtensionKit",
             dependencies: [],
             path: "Sources",
-            exclude: ["Info.plist"],
-            resources: []
+            exclude: [],
+            resources: [],
+            swiftSettings: [
+                .define("IOSEXTENSIONKIT_IOS", .when(platforms: [.iOS])),
+                .define("IOSEXTENSIONKIT_MACOS", .when(platforms: [.macOS])),
+                .define("IOSEXTENSIONKIT_TVOS", .when(platforms: [.tvOS])),
+                .define("IOSEXTENSIONKIT_WATCHOS", .when(platforms: [.watchOS]))
+            ]
         ),
         .testTarget(
             name: "iOSExtensionKitTests",
             dependencies: ["iOSExtensionKit"],
             path: "Tests",
-            exclude: ["Info.plist"]
+            exclude: []
         ),
     ],
-    swiftLanguageVersions: [.v6]
+    swiftLanguageModes: [.v6]
 )
