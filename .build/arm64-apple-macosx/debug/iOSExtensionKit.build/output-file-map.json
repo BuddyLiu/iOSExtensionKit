@@ -1,0 +1,23 @@
+{
+  "": {
+    "swift-dependencies": "/Users/liubo/Codes/0213/code/.build/arm64-apple-macosx/debug/iOSExtensionKit.build/master.swiftdeps"
+  },
+  "/Users/liubo/Codes/0213/code/Sources/Foundation/String+Extension.swift": {
+    "dependencies": "/Users/liubo/Codes/0213/code/.build/arm64-apple-macosx/debug/iOSExtensionKit.build/String+Extension.d",
+    "object": "/Users/liubo/Codes/0213/code/.build/arm64-apple-macosx/debug/iOSExtensionKit.build/String+Extension.swift.o",
+    "swiftmodule": "/Users/liubo/Codes/0213/code/.build/arm64-apple-macosx/debug/iOSExtensionKit.build/String+Extension~partial.swiftmodule",
+    "swift-dependencies": "/Users/liubo/Codes/0213/code/.build/arm64-apple-macosx/debug/iOSExtensionKit.build/String+Extension.swiftdeps"
+  },
+  "/Users/liubo/Codes/0213/code/Sources/UIKit/UIView+Extension.swift": {
+    "dependencies": "/Users/liubo/Codes/0213/code/.build/arm64-apple-macosx/debug/iOSExtensionKit.build/UIView+Extension.d",
+    "object": "/Users/liubo/Codes/0213/code/.build/arm64-apple-macosx/debug/iOSExtensionKit.build/UIView+Extension.swift.o",
+    "swiftmodule": "/Users/liubo/Codes/0213/code/.build/arm64-apple-macosx/debug/iOSExtensionKit.build/UIView+Extension~partial.swiftmodule",
+    "swift-dependencies": "/Users/liubo/Codes/0213/code/.build/arm64-apple-macosx/debug/iOSExtensionKit.build/UIView+Extension.swiftdeps"
+  },
+  "/Users/liubo/Codes/0213/code/Sources/iOSExtensionKit.swift": {
+    "dependencies": "/Users/liubo/Codes/0213/code/.build/arm64-apple-macosx/debug/iOSExtensionKit.build/iOSExtensionKit.d",
+    "object": "/Users/liubo/Codes/0213/code/.build/arm64-apple-macosx/debug/iOSExtensionKit.build/iOSExtensionKit.swift.o",
+    "swiftmodule": "/Users/liubo/Codes/0213/code/.build/arm64-apple-macosx/debug/iOSExtensionKit.build/iOSExtensionKit~partial.swiftmodule",
+    "swift-dependencies": "/Users/liubo/Codes/0213/code/.build/arm64-apple-macosx/debug/iOSExtensionKit.build/iOSExtensionKit.swiftdeps"
+  }
+}
