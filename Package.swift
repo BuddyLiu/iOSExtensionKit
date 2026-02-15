@@ -30,7 +30,8 @@ let package = Package(
                 .define("IOSEXTENSIONKIT_IOS", .when(platforms: [.iOS])),
                 .define("IOSEXTENSIONKIT_MACOS", .when(platforms: [.macOS])),
                 .define("IOSEXTENSIONKIT_TVOS", .when(platforms: [.tvOS])),
-                .define("IOSEXTENSIONKIT_WATCHOS", .when(platforms: [.watchOS]))
+                .define("IOSEXTENSIONKIT_WATCHOS", .when(platforms: [.watchOS])),
+                .unsafeFlags(["-Xfrontend", "-strict-concurrency=targeted"])
             ]
         ),
         .testTarget(

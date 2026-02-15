@@ -41,7 +41,23 @@ public extension String {
     /// - Parameter range: 范围
     /// - Returns: 子字符串或 nil
     func safeSubstring(with range: Range<Int>) -> String? {
-        guard range.lowerBound >= 0 && range.upperBound <= count else { return nil }
+        // 检查范围是否有效
+        guard range.lowerBound >= 0,
+              range.upperBound <= count else {
+            return nil
+        }
+        
+        // Swift Range要求 lowerBound <= upperBound
+        // 但如果 lowerBound > upperBound，我们返回nil而不是崩溃
+        if range.lowerBound > range.upperBound {
+            return nil
+        }
+        
+        // 如果范围为空，返回空字符串
+        if range.lowerBound == range.upperBound {
+            return ""
+        }
+        
         let startIndex = self.index(startIndex, offsetBy: range.lowerBound)
         let endIndex = self.index(startIndex, offsetBy: range.count)
         return String(self[startIndex..<endIndex])
@@ -137,7 +153,12 @@ public extension String {
     
     /// 转换为安全的 URL，自动添加协议前缀
     var toSafeURL: URL? {
-        var urlString = self
+        // 空字符串或空白字符串不是有效的URL
+        if isBlank {
+            return nil
+        }
+        
+        var urlString = self.trimmed
         if !hasPrefix("http://") && !hasPrefix("https://") {
             urlString = "https://" + urlString
         }

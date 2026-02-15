@@ -8,7 +8,7 @@ public extension UserDefaults {
     // MARK: - 类型安全的键
     
     /// 类型安全的UserDefaults键
-    struct Key<Value> {
+    struct Key<Value>: @unchecked Sendable {
         let name: String
         let defaultValue: Value
         
@@ -254,22 +254,24 @@ public extension UserDefaults {
     
     // MARK: - 观察者模式
     
+    // 注意：由于 Swift 并发安全限制，观察者功能暂时不可用
+    // 用户可以直接使用 NotificationCenter 监听 UserDefaults.didChangeNotification
+    
+    /*
     /// 监听UserDefaults变化
     /// - Parameters:
     ///   - key: 要监听的键
     ///   - handler: 变化处理闭包
     /// - Returns: 观察者，需要手动保留引用
-    nonisolated func observe<T>(key: Key<T>, handler: @escaping @Sendable (T, T?) -> Void) -> NSObjectProtocol {
-        let keyCopy = key
-        let defaults = self
-        
+    func observe<T>(key: Key<T>, handler: @escaping (T, T?) -> Void) -> NSObjectProtocol {
         return NotificationCenter.default.addObserver(
             forName: UserDefaults.didChangeNotification,
-            object: defaults,
+            object: self,
             queue: .main
-        ) { _ in
-            let oldValue = defaults.safeGet(for: keyCopy)
-            let newValue = defaults.get(for: keyCopy)
+        ) { [weak self] _ in
+            guard let self = self else { return }
+            let oldValue = self.safeGet(for: key)
+            let newValue = self.get(for: key)
             handler(newValue, oldValue)
         }
     }
@@ -284,12 +286,14 @@ public extension UserDefaults {
             forName: UserDefaults.didChangeNotification,
             object: self,
             queue: .main
-        ) { _ in
+        ) { [weak self] _ in
+            guard let self = self else { return }
             let oldValue = self.object(forKey: keyName)
             let newValue = self.object(forKey: keyName)
             handler(newValue, oldValue)
         }
     }
+    */
 }
 
 // MARK: - 全局便捷方法
@@ -327,39 +331,39 @@ public extension UserDefaults {
 
 // MARK: - 便捷键定义
 
-public extension UserDefaults.Key {
+public extension UserDefaults {
     
     // 示例键定义（实际使用时可以根据需要添加）
     
     /// 首次启动标志
-    static let isFirstLaunch = UserDefaults.Key<Bool>(name: "isFirstLaunch", defaultValue: true)
+    static let isFirstLaunchKey = Key<Bool>(name: "isFirstLaunch", defaultValue: true)
     
     /// 用户ID
-    static let userId = UserDefaults.Key<String>(name: "userId", defaultValue: "")
+    static let userIdKey = Key<String>(name: "userId", defaultValue: "")
     
     /// 用户令牌
-    static let userToken = UserDefaults.Key<String>(name: "userToken", defaultValue: "")
+    static let userTokenKey = Key<String>(name: "userToken", defaultValue: "")
     
     /// 上次登录时间
-    static let lastLoginDate = UserDefaults.Key<Date>(name: "lastLoginDate", defaultValue: Date.distantPast)
+    static let lastLoginDateKey = Key<Date>(name: "lastLoginDate", defaultValue: Date.distantPast)
     
     /// 应用版本
-    static let appVersion = UserDefaults.Key<String>(name: "appVersion", defaultValue: "")
+    static let appVersionKey = Key<String>(name: "appVersion", defaultValue: "")
     
     /// 语言设置
-    static let language = UserDefaults.Key<String>(name: "language", defaultValue: "zh-Hans")
+    static let languageKey = Key<String>(name: "language", defaultValue: "zh-Hans")
     
     /// 主题设置
-    static let theme = UserDefaults.Key<String>(name: "theme", defaultValue: "light")
+    static let themeKey = Key<String>(name: "theme", defaultValue: "light")
     
     /// 通知设置
-    static let notificationsEnabled = UserDefaults.Key<Bool>(name: "notificationsEnabled", defaultValue: true)
+    static let notificationsEnabledKey = Key<Bool>(name: "notificationsEnabled", defaultValue: true)
     
     /// 启动次数
-    static let launchCount = UserDefaults.Key<Int>(name: "launchCount", defaultValue: 0)
+    static let launchCountKey = Key<Int>(name: "launchCount", defaultValue: 0)
     
     /// 上次版本检查时间
-    static let lastVersionCheckDate = UserDefaults.Key<Date>(name: "lastVersionCheckDate", defaultValue: Date.distantPast)
+    static let lastVersionCheckDateKey = Key<Date>(name: "lastVersionCheckDate", defaultValue: Date.distantPast)
 }
 
 // MARK: - 应用设置封装
@@ -376,66 +380,66 @@ public extension UserDefaults {
         
         /// 是否是首次启动
         var isFirstLaunch: Bool {
-            get { defaults.get(for: .isFirstLaunch) }
-            set { defaults.set(newValue, for: .isFirstLaunch) }
+            get { defaults.get(for: UserDefaults.isFirstLaunchKey) }
+            set { defaults.set(newValue, for: UserDefaults.isFirstLaunchKey) }
         }
         
         /// 用户ID
         var userId: String {
-            get { defaults.get(for: .userId) }
-            set { defaults.set(newValue, for: .userId) }
+            get { defaults.get(for: UserDefaults.userIdKey) }
+            set { defaults.set(newValue, for: UserDefaults.userIdKey) }
         }
         
         /// 用户令牌
         var userToken: String {
-            get { defaults.get(for: .userToken) }
-            set { defaults.set(newValue, for: .userToken) }
+            get { defaults.get(for: UserDefaults.userTokenKey) }
+            set { defaults.set(newValue, for: UserDefaults.userTokenKey) }
         }
         
         /// 上次登录时间
         var lastLoginDate: Date {
-            get { defaults.get(for: .lastLoginDate) }
-            set { defaults.set(newValue, for: .lastLoginDate) }
+            get { defaults.get(for: UserDefaults.lastLoginDateKey) }
+            set { defaults.set(newValue, for: UserDefaults.lastLoginDateKey) }
         }
         
         /// 应用版本
         var appVersion: String {
-            get { defaults.get(for: .appVersion) }
-            set { defaults.set(newValue, for: .appVersion) }
+            get { defaults.get(for: UserDefaults.appVersionKey) }
+            set { defaults.set(newValue, for: UserDefaults.appVersionKey) }
         }
         
         /// 语言设置
         var language: String {
-            get { defaults.get(for: .language) }
-            set { defaults.set(newValue, for: .language) }
+            get { defaults.get(for: UserDefaults.languageKey) }
+            set { defaults.set(newValue, for: UserDefaults.languageKey) }
         }
         
         /// 主题设置
         var theme: String {
-            get { defaults.get(for: .theme) }
-            set { defaults.set(newValue, for: .theme) }
+            get { defaults.get(for: UserDefaults.themeKey) }
+            set { defaults.set(newValue, for: UserDefaults.themeKey) }
         }
         
         /// 通知设置
         var notificationsEnabled: Bool {
-            get { defaults.get(for: .notificationsEnabled) }
-            set { defaults.set(newValue, for: .notificationsEnabled) }
+            get { defaults.get(for: UserDefaults.notificationsEnabledKey) }
+            set { defaults.set(newValue, for: UserDefaults.notificationsEnabledKey) }
         }
         
         /// 启动次数
         var launchCount: Int {
-            get { defaults.get(for: .launchCount) }
-            set { defaults.set(newValue, for: .launchCount) }
+            get { defaults.get(for: UserDefaults.launchCountKey) }
+            set { defaults.set(newValue, for: UserDefaults.launchCountKey) }
         }
         
         /// 上次版本检查时间
         var lastVersionCheckDate: Date {
-            get { defaults.get(for: .lastVersionCheckDate) }
-            set { defaults.set(newValue, for: .lastVersionCheckDate) }
+            get { defaults.get(for: UserDefaults.lastVersionCheckDateKey) }
+            set { defaults.set(newValue, for: UserDefaults.lastVersionCheckDateKey) }
         }
         
         /// 记录应用启动
-        func recordAppLaunch() {
+        mutating func recordAppLaunch() {
             launchCount = launchCount + 1
             if isFirstLaunch {
                 isFirstLaunch = false
@@ -446,25 +450,25 @@ public extension UserDefaults {
         /// - Parameters:
         ///   - userId: 用户ID
         ///   - token: 用户令牌
-        func recordLogin(userId: String, token: String) {
+        mutating func recordLogin(userId: String, token: String) {
             self.userId = userId
             self.userToken = token
             self.lastLoginDate = Date()
         }
         
         /// 记录登出
-        func recordLogout() {
+        mutating func recordLogout() {
             userToken = ""
         }
         
         /// 清除所有用户数据
-        func clearUserData() {
+        mutating func clearUserData() {
             userId = ""
             userToken = ""
         }
         
         /// 清除所有设置（保留首次启动标志）
-        func clearAllSettings() {
+        mutating func clearAllSettings() {
             let firstLaunch = isFirstLaunch
             defaults.removeAll(except: ["isFirstLaunch"])
             isFirstLaunch = firstLaunch
