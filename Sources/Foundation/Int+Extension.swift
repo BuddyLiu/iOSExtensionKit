@@ -244,7 +244,13 @@ public extension Int {
     ///   - max: 最大值
     /// - Returns: 随机整数
     static func random(in range: ClosedRange<Int>) -> Int {
-        return Int.random(in: range)
+        let lowerBound = range.lowerBound
+        let upperBound = range.upperBound
+        if lowerBound == upperBound {
+            return lowerBound
+        }
+        // 使用系统随机数生成器
+        return Int.random(in: lowerBound...upperBound)
     }
     
     /// 生成随机数（不包含最大值）
@@ -253,13 +259,21 @@ public extension Int {
     ///   - max: 最大值（不包含）
     /// - Returns: 随机整数
     static func random(in range: Range<Int>) -> Int {
-        return Int.random(in: range)
+        let lowerBound = range.lowerBound
+        let upperBound = range.upperBound
+        if lowerBound >= upperBound {
+            return lowerBound
+        }
+        // 使用系统随机数生成器
+        return Int.random(in: lowerBound..<upperBound)
     }
     
     /// 生成随机数（从0到指定值，不包含最大值）
     /// - Parameter upperBound: 最大值（不包含）
     /// - Returns: 随机整数
     static func random(upTo upperBound: Int) -> Int {
+        guard upperBound > 0 else { return 0 }
+        // 使用系统随机数生成器
         return Int.random(in: 0..<upperBound)
     }
     
