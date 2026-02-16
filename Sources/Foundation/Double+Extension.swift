@@ -582,9 +582,9 @@ public extension Double {
     // MARK: - 物理常数（近似值）
     
     /// 圆周率
-    static var pi: Double {
+    static var piValue: Double {
         // 使用全局作用域访问，避免递归调用
-        return Swift.Double.pi
+        return Double.pi
     }
     
     /// 自然常数e

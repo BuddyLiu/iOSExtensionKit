@@ -1,0 +1,221 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+  schedule:
+    # 每周日运行一次
+    - cron: '0 0 * * 0'
+
+jobs:
+  build-and-test:
+    name: Build and Test
+    runs-on: macos-latest
+    
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+    
+    - name: Setup Swift
+      uses: swift-actions/setup-swift@v2
+      with:
+        swift-version: '6.0'
+    
+    - name: Show Swift Version
+      run: swift --version
+    
+    - name: Build Package
+      run: swift build -v
+    
+    - name: Run Tests
+      run: swift test -v --enable-code-coverage
+    
+    - name: Generate Code Coverage Report
+      run: |
+        xcrun llvm-cov export -format="lcov" .build/debug/iOSExtensionKitPackageTests.xctest/Contents/MacOS/iOSExtensionKitPackageTests -instr-profile .build/debug/codecov/default.profdata > coverage.lcov
+    
+    - name: Upload Coverage to Codecov
+      uses: codecov/codecov-action@v4
+      with:
+        file: ./coverage.lcov
+        fail_ci_if_error: false
+    
+    - name: Run Performance Tests
+      run: swift test --filter "PerformanceTests"
+      continue-on-error: true
+
+  lint-and-format:
+    name: Lint and Format
+    runs-on: macos-latest
+    
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+    
+    - name: Setup Swift
+      uses: swift-actions/setup-swift@v2
+    
+    - name: Check for SwiftLint
+      run: |
+        if command -v swiftlint &> /dev/null; then
+          echo "SwiftLint is installed"
+          swiftlint --version
+        else
+          echo "SwiftLint is not installed, skipping linting"
+        fi
+    
+    - name: Check Package Structure
+      run: |
+        echo "Checking package structure..."
+        swift package describe --type json | jq '.targets[] | .name' | sort
+
+  compatibility-check:
+    name: Compatibility Check
+    strategy:
+      matrix:
+        platform: [iOS, macOS, tvOS, watchOS]
+        xcode: ['15.0']
+    
+    runs-on: macos-latest
+    
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+    
+    - name: Setup Xcode
+      uses: maxim-lobanov/setup-xcode@v1
+      with:
+        xcode-version: ${{ matrix.xcode }}
+    
+    - name: Build for ${{ matrix.platform }}
+      run: |
+        case ${{ matrix.platform }} in
+          iOS)
+            swift build -v --destination 'generic/platform=ios'
+            ;;
+          macOS)
+            swift build -v --destination 'generic/platform=macos'
+            ;;
+          tvOS)
+            swift build -v --destination 'generic/platform=tvos'
+            ;;
+          watchOS)
+            swift build -v --destination 'generic/platform=watchos'
+            ;;
+        esac
+    
+    - name: Test Package Compatibility
+      run: swift package compute-checksum iOSExtensionKit.package.swift
+
+  security-scan:
+    name: Security Scan
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+    
+    - name: Run OWASP Dependency Check
+      uses: dependency-check/Dependency-Check_Action@main
+      with:
+        project: 'iOSExtensionKit'
+        path: '.'
+        format: 'HTML'
+        out: 'reports'
+    
+    - name: Upload Security Report
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: security-report
+        path: reports/
+        retention-days: 30
+
+  documentation:
+    name: Documentation
+    runs-on: macos-latest
+    
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+    
+    - name: Setup Swift
+      uses: swift-actions/setup-swift@v2
+    
+    - name: Generate Documentation
+      run: swift package generate-documentation --target iOSExtensionKit
+    
+    - name: Build Documentation Archive
+      run: swift package generate-documentation --target iOSExtensionKit --transform-for-static-hosting --output-path ./docs --hosting-base-path /iOSExtensionKit
+    
+    - name: Upload Documentation
+      uses: peaceiris/actions-gh-pages@v4
+      if: github.ref == 'refs/heads/main'
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./docs
+        destination_dir: ./docs
+
+  release:
+    name: Create Release
+    runs-on: macos-latest
+    needs: [build-and-test, compatibility-check]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+    
+    - name: Get Version
+      id: get_version
+      run: |
+        TAG_NAME="v1.0.$(date +%Y%m%d)"
+        echo "TAG_NAME=$TAG_NAME" >> $GITHUB_OUTPUT
+        echo "RELEASE_NAME=iOSExtensionKit $TAG_NAME" >> $GITHUB_OUTPUT
+    
+    - name: Create Tag
+      uses: actions/github-script@v7
+      with:
+        script: |
+          const tagName = `${{ steps.get_version.outputs.TAG_NAME }}`;
+          const releaseName = `${{ steps.get_version.outputs.RELEASE_NAME }}`;
+          
+          await github.rest.git.createRef({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            ref: `refs/tags/${tagName}`,
+            sha: context.sha
+          });
+          
+          await github.rest.repos.createRelease({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            tag_name: tagName,
+            name: releaseName,
+            body: `# iOSExtensionKit ${tagName}\n\nThis release includes all the latest features and bug fixes.\n\n## Changes\n\n- Full changelog available in the repository.\n\n## Installation\n\n\`\`\`swift\n.package(url: "https://github.com/${context.repo.owner}/${context.repo.repo}.git", from: "${tagName}")\n\`\`\``,
+            draft: false,
+            prerelease: false
+          });
+
+  notify:
+    name: Notify Status
+    runs-on: ubuntu-latest
+    needs: [build-and-test, compatibility-check, security-scan, documentation]
+    if: always()
+    
+    steps:
+    - name: Check Workflow Status
+      uses: technote-space/workflow-conclusion-action@v3
+    
+    - name: Send Slack Notification
+      uses: 8398a7/action-slack@v3
+      with:
+        status: ${{ env.WORKFLOW_CONCLUSION }}
+        channel: '#notifications'
+        username: 'iOSExtensionKit CI/CD'
+      env:
+        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}

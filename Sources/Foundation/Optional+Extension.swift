@@ -81,7 +81,7 @@ public extension Optional {
     /// 安全解包，如果为nil则返回nil结果
     /// - Parameter transform: 转换闭包
     /// - Returns: 转换后的可选值
-    func flatMap<T>(_ transform: (Wrapped) -> T?) -> T? {
+    func flatMapped<T>(_ transform: (Wrapped) -> T?) -> T? {
         return self.flatMap(transform)
     }
     
@@ -100,7 +100,7 @@ public extension Optional {
     /// 映射可选值，如果为nil则返回nil
     /// - Parameter transform: 转换闭包
     /// - Returns: 转换后的可选值
-    func map<T>(_ transform: (Wrapped) -> T) -> T? {
+    func mapped<T>(_ transform: (Wrapped) -> T) -> T? {
         return self.map(transform)
     }
     

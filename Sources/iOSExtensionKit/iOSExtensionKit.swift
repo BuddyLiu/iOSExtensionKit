@@ -12,11 +12,16 @@
 @_exported import AppKit
 #endif
 
+#if canImport(Combine)
+@_exported import Combine
+#endif
+
 // 重新导出所有子模块
 @_exported import iOSExtensionKit_Foundation
 @_exported import iOSExtensionKit_UIKit
 @_exported import iOSExtensionKit_SwiftUI
 @_exported import iOSExtensionKit_CoreGraphics
+@_exported import iOSExtensionKit_Combine
 
 /// iOSExtensionKit的主要命名空间
 public enum iOSExtensionKit {

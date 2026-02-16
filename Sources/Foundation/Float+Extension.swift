@@ -213,12 +213,12 @@ public extension Float {
     
     /// 转换为弧度
     var radians: Float {
-        return self * .pi / 180.0
+        return self * Float.pi / 180.0
     }
     
     /// 转换为角度
     var degrees: Float {
-        return self * 180.0 / .pi
+        return self * 180.0 / Float.pi
     }
     
     /// 正弦值

@@ -209,24 +209,11 @@ public extension Data {
     /// - Parameter string: 字符串
     /// - Returns: Data，如果字符串为nil则返回空Data
     init?(safeString: String?) {
-        guard let string = string else { return nil }
-        guard let data = string.data(using: .utf8) else { return nil }
+        guard let safeString = safeString else { return nil }
+        guard let data = safeString.data(using: String.Encoding.utf8) else { return nil }
         self = data
     }
     
-    /// 从整数创建Data
-    /// - Parameter value: 整数值
-    init<T: FixedWidthInteger>(from value: T) {
-        var mutableValue = value
-        self = Data(bytes: &mutableValue, count: MemoryLayout<T>.size)
-    }
-    
-    /// 从浮点数创建Data
-    /// - Parameter value: 浮点数值
-    init<T: BinaryFloatingPoint>(from value: T) where T: BinaryFloatingPoint {
-        var mutableValue = value
-        self = Data(bytes: &mutableValue, count: MemoryLayout<T>.size)
-    }
     
     // MARK: - 修改方法
     
@@ -565,17 +552,17 @@ extension Data: @retroactive ExpressibleByUnicodeScalarLiteral {
     }
 }
 
-// MARK: - 自定义字符串转换
+// MARK: - 自定义描述扩展
 
-extension Data: CustomStringConvertible, CustomDebugStringConvertible {
+public extension Data {
     
-    /// 简化的描述
-    public var description: String {
+    /// 简化的描述（不覆盖标准description）
+    var simplifiedDescription: String {
         return "Data(count: \(count), hex: \(prefix(16).hexString)\(count > 16 ? "..." : ""))"
     }
     
-    /// 调试描述
-    public var debugDescription: String {
+    /// 调试描述（不覆盖标准debugDescription）
+    var simplifiedDebugDescription: String {
         return "Data(count: \(count), hex: \(hexString))"
     }
 }
