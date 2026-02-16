@@ -38,28 +38,23 @@ public extension String {
     }
     
     /// 安全获取子字符串，如果范围越界则返回 nil
-    /// - Parameter range: 范围
+    /// - Parameters:
+    ///   - start: 开始索引（包含）
+    ///   - end: 结束索引（不包含）
     /// - Returns: 子字符串或 nil
-    func safeSubstring(with range: Range<Int>) -> String? {
+    func safeSubstring(from start: Int, to end: Int) -> String? {
         // 检查范围是否有效
-        guard range.lowerBound >= 0,
-              range.upperBound <= count else {
-            return nil
-        }
-        
-        // Swift Range要求 lowerBound <= upperBound
-        // 但如果 lowerBound > upperBound，我们返回nil而不是崩溃
-        if range.lowerBound > range.upperBound {
+        guard start >= 0, end >= start, end <= count else {
             return nil
         }
         
         // 如果范围为空，返回空字符串
-        if range.lowerBound == range.upperBound {
+        if start == end {
             return ""
         }
         
-        let startIndex = self.index(startIndex, offsetBy: range.lowerBound)
-        let endIndex = self.index(startIndex, offsetBy: range.count)
+        let startIndex = self.index(startIndex, offsetBy: start)
+        let endIndex = self.index(startIndex, offsetBy: end - start)
         return String(self[startIndex..<endIndex])
     }
     

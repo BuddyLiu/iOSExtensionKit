@@ -45,7 +45,7 @@ final class PerformanceTests: XCTestCase {
         measure {
             for _ in 0..<10000 {
                 _ = str.safeChar(at: 5)
-                _ = str.safeSubstring(with: 3..<8)
+                _ = str.safeSubstring(from: 3, to: 8)
             }
         }
     }
