@@ -12,34 +12,112 @@ let package = Package(
         .watchOS(.v8)
     ],
     products: [
-        // Products define the executables and libraries a package produces, making them visible to other packages.
         .library(
             name: "iOSExtensionKit",
-            targets: ["iOSExtensionKit"]),
+            targets: ["iOSExtensionKit"]
+        ),
+        .library(
+            name: "iOSExtensionKit-Foundation",
+            targets: ["iOSExtensionKit-Foundation"]
+        ),
+        .library(
+            name: "iOSExtensionKit-UIKit",
+            targets: ["iOSExtensionKit-UIKit"]
+        ),
+        .library(
+            name: "iOSExtensionKit-SwiftUI",
+            targets: ["iOSExtensionKit-SwiftUI"]
+        ),
+        .library(
+            name: "iOSExtensionKit-CoreGraphics",
+            targets: ["iOSExtensionKit-CoreGraphics"]
+        ),
+        .library(
+            name: "iOSExtensionKit-Combine",
+            targets: ["iOSExtensionKit-Combine"]
+        ),
     ],
     targets: [
-        // Targets are the basic building blocks of a package, defining a module or a test suite.
-        // Targets can depend on other targets in this package, and on products in packages this package depends on.
+        // 完整库
         .target(
             name: "iOSExtensionKit",
-            dependencies: [],
-            path: "Sources",
-            exclude: [],
-            resources: [],
+            dependencies: [
+                "iOSExtensionKit-Foundation",
+                "iOSExtensionKit-UIKit", 
+                "iOSExtensionKit-SwiftUI",
+                "iOSExtensionKit-CoreGraphics"
+            ],
+            path: "Sources/iOSExtensionKit",
             swiftSettings: [
-                .define("IOSEXTENSIONKIT_IOS", .when(platforms: [.iOS])),
-                .define("IOSEXTENSIONKIT_MACOS", .when(platforms: [.macOS])),
-                .define("IOSEXTENSIONKIT_TVOS", .when(platforms: [.tvOS])),
-                .define("IOSEXTENSIONKIT_WATCHOS", .when(platforms: [.watchOS])),
+                .enableExperimentalFeature("StrictConcurrency"),
+                .enableExperimentalFeature("RegionBasedIsolation"),
+            ]
+        ),
+        
+        // Foundation 扩展模块
+        .target(
+            name: "iOSExtensionKit-Foundation",
+            dependencies: [],
+            path: "Sources/Foundation",
+            swiftSettings: [
+                .define("IOSEXTENSIONKIT_FOUNDATION"),
+            ]
+        ),
+        
+        // UIKit 扩展模块  
+        .target(
+            name: "iOSExtensionKit-UIKit",
+            dependencies: [],
+            path: "Sources/UIKit",
+            swiftSettings: [
+                .define("IOSEXTENSIONKIT_UIKIT"),
                 .unsafeFlags(["-Xfrontend", "-strict-concurrency=targeted"])
             ]
         ),
+        
+        // SwiftUI 扩展模块
+        .target(
+            name: "iOSExtensionKit-SwiftUI",
+            dependencies: [],
+            path: "Sources/SwiftUI",
+            swiftSettings: [
+                .define("IOSEXTENSIONKIT_SWIFTUI"),
+            ]
+        ),
+        
+        // CoreGraphics 扩展模块
+        .target(
+            name: "iOSExtensionKit-CoreGraphics",
+            dependencies: [],
+            path: "Sources/CoreGraphics",
+            swiftSettings: [
+                .define("IOSEXTENSIONKIT_COREGRAPHICS"),
+            ]
+        ),
+        
+        // Combine 扩展模块
+        .target(
+            name: "iOSExtensionKit-Combine",
+            dependencies: [],
+            path: "Sources/Combine",
+            swiftSettings: [
+                .define("IOSEXTENSIONKIT_COMBINE"),
+            ]
+        ),
+        
+        // 测试目标
         .testTarget(
             name: "iOSExtensionKitTests",
-            dependencies: ["iOSExtensionKit"],
-            path: "Tests",
-            exclude: []
+            dependencies: [
+                "iOSExtensionKit-Foundation",
+                "iOSExtensionKit-UIKit",
+                "iOSExtensionKit-SwiftUI",
+                "iOSExtensionKit-CoreGraphics",
+                "iOSExtensionKit-Combine"
+            ],
+            path: "Tests"
         ),
     ],
     swiftLanguageModes: [.v6]
 )
+

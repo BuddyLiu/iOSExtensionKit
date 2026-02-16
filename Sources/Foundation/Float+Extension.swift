@@ -186,7 +186,9 @@ public extension Float {
     ///   - max: 最大值
     /// - Returns: 随机浮点数
     static func random(in range: ClosedRange<Float>) -> Float {
-        return Float.random(in: range)
+        // 使用系统随机数生成器，避免递归调用
+        var generator = SystemRandomNumberGenerator()
+        return Float.random(in: range, using: &generator)
     }
     
     /// 生成随机数（不包含最大值）
@@ -195,7 +197,9 @@ public extension Float {
     ///   - max: 最大值（不包含）
     /// - Returns: 随机浮点数
     static func random(in range: Range<Float>) -> Float {
-        return Float.random(in: range)
+        // 使用系统随机数生成器，避免递归调用
+        var generator = SystemRandomNumberGenerator()
+        return Float.random(in: range, using: &generator)
     }
     
     /// 生成随机数（从0到指定值，不包含最大值）

@@ -8,6 +8,7 @@ import SwiftUI
 import UIKit
 #endif
 
+@available(iOS 15.0, macOS 12.0, tvOS 15.0, watchOS 8.0, *)
 public extension View {
     
     // MARK: - 布局扩展

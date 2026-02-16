@@ -23,22 +23,22 @@ public extension Double {
     }
     
     /// 检查是否为有限数
-    var isFinite: Bool {
+    var isFiniteValue: Bool {
         return self.isFinite
     }
     
     /// 检查是否为无限数
-    var isInfinite: Bool {
+    var isInfiniteValue: Bool {
         return self.isInfinite
     }
     
     /// 检查是否为NaN（非数字）
-    var isNaN: Bool {
+    var isNaNValue: Bool {
         return self.isNaN
     }
     
     /// 检查是否为正常数（既不是NaN也不是无限数）
-    var isNormal: Bool {
+    var isNormalValue: Bool {
         return self.isNormal
     }
     
@@ -292,7 +292,9 @@ public extension Double {
     ///   - max: 最大值
     /// - Returns: 随机浮点数
     static func random(in range: ClosedRange<Double>) -> Double {
-        return Double.random(in: range)
+        // 使用系统随机数生成器，避免递归调用
+        var generator = SystemRandomNumberGenerator()
+        return Double.random(in: range, using: &generator)
     }
     
     /// 生成随机数（不包含最大值）
@@ -301,14 +303,18 @@ public extension Double {
     ///   - max: 最大值（不包含）
     /// - Returns: 随机浮点数
     static func random(in range: Range<Double>) -> Double {
-        return Double.random(in: range)
+        // 使用系统随机数生成器，避免递归调用
+        var generator = SystemRandomNumberGenerator()
+        return Double.random(in: range, using: &generator)
     }
     
     /// 生成随机数（从0到指定值，不包含最大值）
     /// - Parameter upperBound: 最大值（不包含）
     /// - Returns: 随机浮点数
     static func random(upTo upperBound: Double) -> Double {
-        return Double.random(in: 0..<upperBound)
+        // 使用系统随机数生成器，避免递归调用
+        var generator = SystemRandomNumberGenerator()
+        return Double.random(in: 0..<upperBound, using: &generator)
     }
     
     // MARK: - 角度相关
@@ -577,7 +583,8 @@ public extension Double {
     
     /// 圆周率
     static var pi: Double {
-        return Double.pi
+        // 使用全局作用域访问，避免递归调用
+        return Swift.Double.pi
     }
     
     /// 自然常数e
@@ -744,10 +751,10 @@ public extension Array where Element == Double {
     /// 归一化到0-1范围
     /// - Returns: 归一化后的数组
     var normalized: [Double] {
-        guard let min = min(), let max = max(), min != max else {
+        guard let minVal = self.min(), let maxVal = self.max(), minVal != maxVal else {
             return Array(repeating: 0, count: count)
         }
-        return map { ($0 - min) / (max - min) }
+        return map { ($0 - minVal) / (maxVal - minVal) }
     }
     
     /// 标准化（均值为0，标准差为1）
