@@ -323,7 +323,8 @@ public extension Array {
     /// - Returns: 随机元素数组
     func randomElementsWithReplacement(count: Int) -> [Element] {
         guard count > 0 && !isEmpty else { return [] }
-        return (0..<count).map { _ in randomElement()! }
+        // 安全的随机元素生成，避免强制解包
+        return (0..<count).compactMap { _ in randomElement() }
     }
     
     // MARK: - 性能优化方法
