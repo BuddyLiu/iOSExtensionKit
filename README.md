@@ -45,16 +45,18 @@
 - **Cancellable 扩展**: 存储管理、生命周期控制
 
 #### 5. CoreGraphics 扩展
+- **CGPoint 扩展**: 点向量运算、距离计算、几何关系
+- **CGSize 扩展**: 尺寸计算、比例缩放、边距处理
 - **CGRect 扩展**: 几何计算、布局辅助
 
-#### 6. 安全扩展 (新增)
+#### 6. 安全扩展 
 - **字符串安全**: 数据加密、哈希计算、输入验证、敏感信息隐藏
 - **数据安全**: AES加密、Base64编码、安全随机数生成
 - **密钥链管理**: 安全的本地数据存储
 - **安全配置检查**: 越狱检测、调试检测、SSL验证检查
 - **安全工具**: 时序攻击防护、安全比较、安全延迟
 
-#### 7. 调试和日志工具 (新增)
+#### 7. 调试和日志工具 
 - **日志管理器**: 多级别日志记录（详细/调试/信息/警告/错误/严重）
 - **结构化日志**: 支持OSLog结构化日志
 - **日志文件输出**: 支持日志文件存储和导出
@@ -62,7 +64,7 @@
 - **调试信息收集**: 系统信息收集、内存监控、性能监控
 - **调试宏**: 仅在调试模式下有效的便捷宏
 
-#### 8. 国际化/本地化扩展 (新增)
+#### 8. 国际化/本地化扩展 
 - **本地化字符串**: 便捷的本地化字符串访问和格式化
 - **语言管理器**: 动态语言切换、RTL支持
 - **本地化格式化**: 日期、数字、货币、文件大小的本地化显示
@@ -74,7 +76,7 @@
 - **网络扩展**: URL请求、JSON处理
 - **性能计时器**: 代码性能分析
 - **文件管理**: 文件操作扩展
-- **性能优化器**: 缓存管理、内存优化、性能监控（新增）
+- **性能优化器**: 缓存管理、内存优化、性能监控
 
 ## 安装
 
@@ -335,31 +337,35 @@ iOSExtensionKit/
 │   │   ├── Bool+Extension.swift       # 布尔值扩展
 │   │   ├── URL+Extension.swift        # URL扩展
 │   │   ├── Data+Extension.swift       # 数据扩展
-│   │   └── Optional+Extension.swift   # 可选值扩展
-│   ├── UIKit/                         # UIKit扩展
-│   │   ├── UIView+Extension.swift     # UIView扩展
-│   │   ├── UIViewController+Extension.swift
-│   │   └── UIColor+Extension.swift    # 颜色扩展
-│   ├── SwiftUI/                       # SwiftUI扩展
-│   │   ├── View+Extension.swift       # View扩展
-│   │   └── Color+Extension.swift      # 颜色扩展
-│   ├── CoreGraphics/                  # CoreGraphics扩展
-│   │   └── CGRect+Extension.swift     # 矩形扩展
-│   ├── Combine/                       # Combine扩展
-│   │   └── Publisher+Extension.swift  # 发布者扩展
-│   ├── Security/                      # 安全扩展（新增）
-│   │   └── Security+Extension.swift   # 安全工具扩展
-│   ├── Utilities/                     # 工具类扩展
-│   │   ├── Device+Extension.swift     # 设备扩展
-│   │   ├── Date+Extension.swift       # 日期工具扩展
+│   │   ├── Optional+Extension.swift   # 可选值扩展
+│   │   ├── PerformanceTimer.swift     # 性能计时器
 │   │   ├── FileManager+Extension.swift # 文件管理扩展
 │   │   ├── UserDefaults+Extension.swift # 用户偏好扩展
 │   │   ├── NotificationCenter+Extension.swift # 通知中心扩展
-│   │   ├── DispatchQueue+Extension.swift # 队列扩展
-│   │   ├── PerformanceTimer.swift     # 性能计时器
-│   │   ├── PerformanceOptimizer.swift # 性能优化器（新增）
-│   │   ├── Debug+Extension.swift      # 调试和日志工具（新增）
-│   │   └── Localization+Extension.swift # 国际化/本地化扩展（新增）
+│   │   └── DispatchQueue+Extension.swift # 队列扩展
+│   ├── UIKit/                         # UIKit扩展
+│   │   ├── UIView+Extension.swift     # UIView扩展
+│   │   ├── UIViewController+Extension.swift # 视图控制器扩展
+│   │   ├── UIColor+Extension.swift    # 颜色扩展
+│   │   ├── UILabel+Extension.swift    # 标签扩展
+│   │   └── UIDevice+Extension.swift   # 设备信息扩展
+│   ├── SwiftUI/                       # SwiftUI扩展
+│   │   ├── View+Extension.swift       # View扩展
+│   │   └── Text+Extension.swift       # Text扩展
+│   ├── CoreGraphics/                  # CoreGraphics扩展
+│   │   ├── CGPoint+Extension.swift    # 点扩展
+│   │   ├── CGSize+Extension.swift     # 尺寸扩展
+│   │   └── CGRect+Extension.swift     # 矩形扩展
+│   ├── Combine/                       # Combine扩展
+│   │   └── Publisher+Extension.swift  # 发布者扩展
+│   ├── Security/                      # 安全扩展
+│   │   └── Security+Extension.swift   # 安全工具扩展
+│   ├── Utilities/                     # 工具类扩展
+│   │   ├── Debug+Extension.swift      # 调试和日志工具
+│   │   ├── Localization+Extension.swift # 国际化/本地化扩展
+│   │   └── PerformanceOptimizer.swift # 性能优化器
+│   ├── Network/                       # 网络扩展
+│   │   └── URLSession+Extension.swift # URL会话扩展
 │   └── Animation/                     # 动画扩展
 │       └── UIView+Animation.swift     # UIView动画扩展
 ├── Tests/
@@ -370,7 +376,7 @@ iOSExtensionKit/
 │       ├── SetExtensionTests.swift
 │       ├── PerformanceTests.swift
 │       └── DispatchQueueExtensionTests.swift
-├── Examples/                          # 示例代码（新增）
+├── Examples/                          # 示例代码
 │   ├── Foundation/                    # Foundation示例
 │   │   └── FoundationExamples.swift   # Foundation扩展示例
 │   ├── UIKit/                         # UIKit示例
