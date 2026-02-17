@@ -1,4 +1,0 @@
-module iOSExtensionKit {
-    header "/Users/liubo/Codes/0213/code/.build/arm64-apple-macosx/debug/iOSExtensionKit.build/iOSExtensionKit-Swift.h"
-    requires objc
-}
