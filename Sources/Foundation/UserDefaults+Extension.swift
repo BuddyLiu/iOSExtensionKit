@@ -24,9 +24,29 @@ public extension UserDefaults {
     /// - Parameter key: 键
     /// - Returns: 值
     func get<T>(for key: Key<T>) -> T {
-        if let value = object(forKey: key.name) as? T {
-            return value
+        // 使用object(forKey:)检查键是否存在
+        guard let value = object(forKey: key.name) else {
+            return key.defaultValue
         }
+        
+        // 特殊处理布尔值：UserDefaults存储布尔值为NSNumber
+        if T.self == Bool.self {
+            // 确保正确处理存储格式
+            if let numberValue = value as? NSNumber {
+                return numberValue.boolValue as! T
+            } else if let boolValue = value as? Bool {
+                return boolValue as! T
+            } else {
+                // 无法转换，返回默认值
+                return key.defaultValue
+            }
+        }
+        
+        // 对于其他类型，尝试转换
+        if let typedValue = value as? T {
+            return typedValue
+        }
+        
         return key.defaultValue
     }
     
@@ -169,8 +189,15 @@ public extension UserDefaults {
     /// - Returns: 切换后的值
     @discardableResult
     func toggle(key: Key<Bool>) -> Bool {
-        let newValue = !bool(for: key)
-        set(newValue, for: key)
+        // 特殊处理：键不存在时，默认值为false，所以第一次切换应该是true
+        let currentValue = bool(for: key)
+        
+        let newValue = !currentValue
+        
+        // 直接使用UserDefaults的set方法，确保存储
+        set(newValue, forKey: key.name)
+        synchronize()
+        
         return newValue
     }
     
