@@ -149,22 +149,22 @@ public extension Text {
     // MARK: - 文本对齐
     
     /// 左对齐文本
-    func alignLeft() -> Text {
+    func alignLeft() -> some View {
         self.multilineTextAlignment(.leading)
     }
     
     /// 居中对齐文本
-    func alignCenter() -> Text {
+    func alignCenter() -> some View {
         self.multilineTextAlignment(.center)
     }
     
     /// 右对齐文本
-    func alignRight() -> Text {
+    func alignRight() -> some View {
         self.multilineTextAlignment(.trailing)
     }
     
     /// 设置文本对齐方式
-    func alignment(_ alignment: TextAlignment) -> Text {
+    func alignment(_ alignment: TextAlignment) -> some View {
         self.multilineTextAlignment(alignment)
     }
     
