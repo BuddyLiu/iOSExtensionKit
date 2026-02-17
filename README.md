@@ -4,7 +4,7 @@
 [![Platform](https://img.shields.io/badge/Platform-iOS%2015+-blue.svg)](https://developer.apple.com/ios/)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
-**iOSExtensionKit** 是一个功能强大的 Swift + SwiftUI + UIKit 扩展库，旨在通过给系统类添加 extension 来增强代码的便捷性、安全性和运行效率，使其足以支撑大部分大型项目的功能开发。
+**iOSExtensionKit** 是一个功能强大的 Swift + SwiftUI + UIKit 扩展库，旨在通过给系统类添加 extension 来增强代码的便捷性、安全性和运行效率，使其足以支撑大部分大型项目的功能开发。由BuddyLiu维护，致力于为iOS/macOS开发者提供高质量的扩展工具。
 
 ## 特性
 
@@ -84,14 +84,14 @@
 
 在 Xcode 中添加包依赖：
 ```
-https://github.com/your-username/iOSExtensionKit.git
+https://github.com/BuddyLiu/iOSExtensionKit.git
 ```
 
 或者直接在 `Package.swift` 中添加：
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/your-username/iOSExtensionKit.git", from: "1.0.0")
+    .package(url: "https://github.com/BuddyLiu/iOSExtensionKit.git", from: "1.0.0")
 ]
 ```
 
