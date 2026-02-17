@@ -186,8 +186,8 @@ public extension CGPoint {
     /// - Returns: 投影点
     func clamped(to rect: CGRect) -> CGPoint {
         return CGPoint(
-            x: max(rect.minX, min(rect.maxX, x)),
-            y: max(rect.minY, min(rect.maxY, y))
+            x: Swift.max(rect.minX, Swift.min(rect.maxX, x)),
+            y: Swift.max(rect.minY, Swift.min(rect.maxY, y))
         )
     }
     
@@ -199,8 +199,8 @@ public extension CGPoint {
             return self
         }
         
-        let clampedX = max(rect.minX, min(rect.maxX, x))
-        let clampedY = max(rect.minY, min(rect.maxY, y))
+        let clampedX = Swift.max(rect.minX, Swift.min(rect.maxX, x))
+        let clampedY = Swift.max(rect.minY, Swift.min(rect.maxY, y))
         
         return CGPoint(x: clampedX, y: clampedY)
     }
@@ -372,7 +372,7 @@ public extension CGPoint {
         }
         
         // 计算投影参数 t
-        let t = max(0, min(1, ((x - segmentStart.x) * (segmentEnd.x - segmentStart.x) +
+        let t = Swift.max(0, Swift.min(1, ((x - segmentStart.x) * (segmentEnd.x - segmentStart.x) +
                               (y - segmentStart.y) * (segmentEnd.y - segmentStart.y)) / lineLengthSquared))
         
         // 计算投影点
@@ -464,8 +464,8 @@ public extension Array where Element == CGPoint {
         var result: [CGPoint] = []
         
         for i in 0..<count {
-            let start = max(0, i - windowSize / 2)
-            let end = min(count - 1, i + windowSize / 2)
+            let start = Swift.max(0, i - windowSize / 2)
+            let end = Swift.min(count - 1, i + windowSize / 2)
             
             var sumX: CGFloat = 0
             var sumY: CGFloat = 0
