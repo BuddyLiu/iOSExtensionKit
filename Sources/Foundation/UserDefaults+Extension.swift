@@ -9,8 +9,8 @@ public extension UserDefaults {
     
     /// 类型安全的UserDefaults键
     struct Key<Value>: @unchecked Sendable {
-        let name: String
-        let defaultValue: Value
+        public let name: String
+        public let defaultValue: Value
         
         public init(name: String, defaultValue: Value) {
             self.name = name
@@ -374,72 +374,72 @@ public extension UserDefaults {
     struct AppSettings {
         private let defaults: UserDefaults
         
-        init(defaults: UserDefaults = .standard) {
+        public init(defaults: UserDefaults = .standard) {
             self.defaults = defaults
         }
         
         /// 是否是首次启动
-        var isFirstLaunch: Bool {
+        public var isFirstLaunch: Bool {
             get { defaults.get(for: UserDefaults.isFirstLaunchKey) }
             set { defaults.set(newValue, for: UserDefaults.isFirstLaunchKey) }
         }
         
         /// 用户ID
-        var userId: String {
+        public var userId: String {
             get { defaults.get(for: UserDefaults.userIdKey) }
             set { defaults.set(newValue, for: UserDefaults.userIdKey) }
         }
         
         /// 用户令牌
-        var userToken: String {
+        public var userToken: String {
             get { defaults.get(for: UserDefaults.userTokenKey) }
             set { defaults.set(newValue, for: UserDefaults.userTokenKey) }
         }
         
         /// 上次登录时间
-        var lastLoginDate: Date {
+        public var lastLoginDate: Date {
             get { defaults.get(for: UserDefaults.lastLoginDateKey) }
             set { defaults.set(newValue, for: UserDefaults.lastLoginDateKey) }
         }
         
         /// 应用版本
-        var appVersion: String {
+        public var appVersion: String {
             get { defaults.get(for: UserDefaults.appVersionKey) }
             set { defaults.set(newValue, for: UserDefaults.appVersionKey) }
         }
         
         /// 语言设置
-        var language: String {
+        public var language: String {
             get { defaults.get(for: UserDefaults.languageKey) }
             set { defaults.set(newValue, for: UserDefaults.languageKey) }
         }
         
         /// 主题设置
-        var theme: String {
+        public var theme: String {
             get { defaults.get(for: UserDefaults.themeKey) }
             set { defaults.set(newValue, for: UserDefaults.themeKey) }
         }
         
         /// 通知设置
-        var notificationsEnabled: Bool {
+        public var notificationsEnabled: Bool {
             get { defaults.get(for: UserDefaults.notificationsEnabledKey) }
             set { defaults.set(newValue, for: UserDefaults.notificationsEnabledKey) }
         }
         
         /// 启动次数
-        var launchCount: Int {
+        public var launchCount: Int {
             get { defaults.get(for: UserDefaults.launchCountKey) }
             set { defaults.set(newValue, for: UserDefaults.launchCountKey) }
         }
         
         /// 上次版本检查时间
-        var lastVersionCheckDate: Date {
+        public var lastVersionCheckDate: Date {
             get { defaults.get(for: UserDefaults.lastVersionCheckDateKey) }
             set { defaults.set(newValue, for: UserDefaults.lastVersionCheckDateKey) }
         }
         
         /// 记录应用启动
-        mutating func recordAppLaunch() {
+        public mutating func recordAppLaunch() {
             launchCount = launchCount + 1
             if isFirstLaunch {
                 isFirstLaunch = false
@@ -450,25 +450,25 @@ public extension UserDefaults {
         /// - Parameters:
         ///   - userId: 用户ID
         ///   - token: 用户令牌
-        mutating func recordLogin(userId: String, token: String) {
+        public mutating func recordLogin(userId: String, token: String) {
             self.userId = userId
             self.userToken = token
             self.lastLoginDate = Date()
         }
         
         /// 记录登出
-        mutating func recordLogout() {
+        public mutating func recordLogout() {
             userToken = ""
         }
         
         /// 清除所有用户数据
-        mutating func clearUserData() {
+        public mutating func clearUserData() {
             userId = ""
             userToken = ""
         }
         
         /// 清除所有设置（保留首次启动标志）
-        mutating func clearAllSettings() {
+        public mutating func clearAllSettings() {
             let firstLaunch = isFirstLaunch
             defaults.removeAll(except: ["isFirstLaunch"])
             isFirstLaunch = firstLaunch
