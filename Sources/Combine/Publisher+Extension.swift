@@ -57,9 +57,10 @@ public extension Publisher {
             // 延迟后重试
             return Just(())
                 .delay(for: .seconds(delay), scheduler: scheduler)
-                .flatMap { _ in self.retryWithDelay(maxAttempts: maxAttempts - attempt, delay: delay, scheduler: scheduler) }
+                .flatMap { _ in self }
                 .eraseToAnyPublisher()
         }
+        .retry(maxAttempts - 1)
         .eraseToAnyPublisher()
     }
     
@@ -441,37 +442,6 @@ public extension Publisher {
             .eraseToAnyPublisher()
     }
     
-    /// 异步映射（支持异步操作）
-    /// - Parameter transform: 异步转换函数
-    func asyncMap<T>(_ transform: @escaping (Output) async -> T) -> AnyPublisher<T, Failure> {
-        self.flatMap { value in
-            Future { promise in
-                Task {
-                    let result = await transform(value)
-                    promise(.success(result))
-                }
-            }
-        }
-        .eraseToAnyPublisher()
-    }
-    
-    /// 异步映射（支持异步操作并可能抛出错误）
-    /// - Parameter transform: 异步转换函数
-    func asyncTryMap<T>(_ transform: @escaping (Output) async throws -> T) -> AnyPublisher<T, Error> where Failure == Error {
-        self.flatMap { value in
-            Future { promise in
-                Task {
-                    do {
-                        let result = try await transform(value)
-                        promise(.success(result))
-                    } catch {
-                        promise(.failure(error))
-                    }
-                }
-            }
-        }
-        .eraseToAnyPublisher()
-    }
 }
 
 // MARK: - 便捷操作符

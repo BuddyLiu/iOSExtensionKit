@@ -64,18 +64,18 @@ public extension Text {
         self.font(.caption2)
     }
     
-    /// 设置粗体字体
-    func bold() -> Text {
+    /// 设置为粗体字体
+    func boldText() -> Text {
         self.bold()
     }
-    
-    /// 设置斜体字体
-    func italic() -> Text {
+
+    /// 设置为斜体字体
+    func italicText() -> Text {
         self.italic()
     }
-    
+
     /// 设置字体粗细
-    func fontWeight(_ weight: Font.Weight) -> Text {
+    func setFontWeight(_ weight: Font.Weight) -> Text {
         self.fontWeight(weight)
     }
     
@@ -84,8 +84,9 @@ public extension Text {
         self.font(.system(size: size, weight: weight, design: design))
     }
     
-    /// 设置等宽字体
-    func monospaced() -> Text {
+    /// 设置为等宽字体
+    @available(iOS 16.0, macOS 13.3, tvOS 16.0, watchOS 9.1, *)
+    func monospacedText() -> Text {
         self.monospaced()
     }
     
@@ -107,37 +108,37 @@ public extension Text {
     }
     
     /// 设置红色文本颜色
-    func red() -> Text {
+    func redColor() -> Text {
         self.foregroundColor(.red)
     }
     
     /// 设置橙色文本颜色
-    func orange() -> Text {
+    func orangeColor() -> Text {
         self.foregroundColor(.orange)
     }
     
     /// 设置黄色文本颜色
-    func yellow() -> Text {
+    func yellowColor() -> Text {
         self.foregroundColor(.yellow)
     }
     
     /// 设置绿色文本颜色
-    func green() -> Text {
+    func greenColor() -> Text {
         self.foregroundColor(.green)
     }
     
     /// 设置蓝色文本颜色
-    func blue() -> Text {
+    func blueColor() -> Text {
         self.foregroundColor(.blue)
     }
     
     /// 设置紫色文本颜色
-    func purple() -> Text {
+    func purpleColor() -> Text {
         self.foregroundColor(.purple)
     }
     
     /// 设置粉色文本颜色
-    func pink() -> Text {
+    func pinkColor() -> Text {
         self.foregroundColor(.pink)
     }
     
@@ -152,17 +153,17 @@ public extension Text {
     func alignLeft() -> some View {
         self.multilineTextAlignment(.leading)
     }
-    
+
     /// 居中对齐文本
     func alignCenter() -> some View {
         self.multilineTextAlignment(.center)
     }
-    
+
     /// 右对齐文本
     func alignRight() -> some View {
         self.multilineTextAlignment(.trailing)
     }
-    
+
     /// 设置文本对齐方式
     func alignment(_ alignment: TextAlignment) -> some View {
         self.multilineTextAlignment(alignment)
@@ -171,7 +172,7 @@ public extension Text {
     // MARK: - 文本修饰
     
     /// 添加下划线
-    func underline(_ color: Color? = nil) -> Text {
+    func addUnderline(_ color: Color? = nil) -> Text {
         if let color = color {
             return self.underline(true, color: color)
         } else {
@@ -180,7 +181,7 @@ public extension Text {
     }
     
     /// 添加删除线
-    func strikethrough(_ color: Color? = nil) -> Text {
+    func addStrikethrough(_ color: Color? = nil) -> Text {
         if let color = color {
             return self.strikethrough(true, color: color)
         } else {
@@ -188,101 +189,100 @@ public extension Text {
         }
     }
     
-    /// 设置字间距
-    func kerning(_ kerning: CGFloat) -> Text {
+    /// 设置文本字间距
+    func setKerning(_ kerning: CGFloat) -> Text {
         self.kerning(kerning)
     }
-    
-    /// 设置行间距
-    func lineSpacing(_ spacing: CGFloat) -> Text {
+
+    /// 设置文本行间距
+    func setLineSpacing(_ spacing: CGFloat) -> some View {
         self.lineSpacing(spacing)
     }
-    
+
     /// 设置文本基线偏移
-    func baselineOffset(_ offset: CGFloat) -> Text {
+    func setBaselineOffset(_ offset: CGFloat) -> Text {
         self.baselineOffset(offset)
     }
-    
+
     /// 设置文本跟踪
-    func tracking(_ tracking: CGFloat) -> Text {
+    func setTracking(_ tracking: CGFloat) -> Text {
         self.tracking(tracking)
     }
-    
+
     /// 限制文本行数
-    func lineLimit(_ number: Int?) -> Text {
+    func setLineLimit(_ number: Int?) -> some View {
         self.lineLimit(number)
     }
-    
+
     /// 设置最小缩放比例
-    func minimumScaleFactor(_ factor: CGFloat) -> Text {
+    func setMinimumScaleFactor(_ factor: CGFloat) -> some View {
         self.minimumScaleFactor(factor)
     }
-    
+
     /// 设置截断模式
-    func truncationMode(_ mode: Text.TruncationMode) -> Text {
+    func setTruncationMode(_ mode: Text.TruncationMode) -> some View {
         self.truncationMode(mode)
     }
     
-    // MARK: - 链式调用示例
+    // MARK: - 链式样式
     
-    /// 链式设置标题样式
-    func titleStyle(color: Color = .primary) -> Text {
+    /// 应用标题样式
+    func applyTitleStyle(color: Color = .primary) -> some View {
         self
             .font(.title)
             .fontWeight(.bold)
             .foregroundColor(color)
     }
     
-    /// 链式设置副标题样式
-    func subtitleStyle(color: Color = .secondary) -> Text {
+    /// 应用副标题样式
+    func applySubtitleStyle(color: Color = .secondary) -> some View {
         self
             .font(.title2)
             .fontWeight(.semibold)
             .foregroundColor(color)
     }
     
-    /// 链式设置正文样式
-    func bodyStyle(color: Color = .primary) -> Text {
+    /// 应用正文样式
+    func applyBodyStyle(color: Color = .primary) -> some View {
         self
             .font(.body)
             .foregroundColor(color)
-            .lineSpacing(4)
     }
     
-    /// 链式设置链接样式
-    func linkStyle(color: Color = .blue) -> Text {
+    /// 应用链接样式
+    func applyLinkStyle(color: Color = .blue) -> some View {
         self
             .font(.body)
             .foregroundColor(color)
-            .underline(color)
+            .underline(true, color: color)
     }
     
-    /// 链式设置错误样式
-    func errorStyle() -> Text {
+    /// 应用错误样式
+    func applyErrorStyle() -> some View {
         self
             .font(.caption)
             .foregroundColor(.red)
             .bold()
     }
     
-    /// 链式设置成功样式
-    func successStyle() -> Text {
+    /// 应用成功样式
+    func applySuccessStyle() -> some View {
         self
             .font(.caption)
             .foregroundColor(.green)
             .bold()
     }
     
-    /// 链式设置警告样式
-    func warningStyle() -> Text {
+    /// 应用警告样式
+    func applyWarningStyle() -> some View {
         self
             .font(.caption)
             .foregroundColor(.orange)
             .bold()
     }
     
-    /// 链式设置提示样式
-    func hintStyle() -> Text {
+    /// 应用提示样式
+    func applyHintStyle() -> some View {
         self
             .font(.caption)
             .foregroundColor(.gray)
@@ -295,72 +295,64 @@ public extension Text {
 public extension Text {
     
     /// 创建标题文本
-    static func title(_ text: String, color: Color = .primary) -> Text {
-        Text(text)
-            .titleStyle(color: color)
+    static func styledTitle(_ text: String, color: Color = .primary) -> some View {
+        Text(text).applyTitleStyle(color: color)
     }
     
     /// 创建副标题文本
-    static func subtitle(_ text: String, color: Color = .secondary) -> Text {
-        Text(text)
-            .subtitleStyle(color: color)
+    static func styledSubtitle(_ text: String, color: Color = .secondary) -> some View {
+        Text(text).applySubtitleStyle(color: color)
     }
     
     /// 创建正文文本
-    static func body(_ text: String, color: Color = .primary) -> Text {
-        Text(text)
-            .bodyStyle(color: color)
+    static func styledBody(_ text: String, color: Color = .primary) -> some View {
+        Text(text).applyBodyStyle(color: color)
     }
     
     /// 创建链接文本
-    static func link(_ text: String, color: Color = .blue) -> Text {
-        Text(text)
-            .linkStyle(color: color)
+    static func styledLink(_ text: String, color: Color = .blue) -> some View {
+        Text(text).applyLinkStyle(color: color)
     }
     
     /// 创建错误文本
-    static func error(_ text: String) -> Text {
-        Text(text)
-            .errorStyle()
+    static func styledError(_ text: String) -> some View {
+        Text(text).applyErrorStyle()
     }
     
     /// 创建成功文本
-    static func success(_ text: String) -> Text {
-        Text(text)
-            .successStyle()
+    static func styledSuccess(_ text: String) -> some View {
+        Text(text).applySuccessStyle()
     }
     
     /// 创建警告文本
-    static func warning(_ text: String) -> Text {
-        Text(text)
-            .warningStyle()
+    static func styledWarning(_ text: String) -> some View {
+        Text(text).applyWarningStyle()
     }
     
     /// 创建提示文本
-    static func hint(_ text: String) -> Text {
-        Text(text)
-            .hintStyle()
+    static func styledHint(_ text: String) -> some View {
+        Text(text).applyHintStyle()
     }
     
     /// 创建带图标的文本
-    static func withIcon(_ systemName: String, text: String, color: Color = .primary) -> Text {
+    static func withSystemIcon(_ systemName: String, text: String, color: Color = .primary) -> Text {
         Text(Image(systemName: systemName)) + Text(" ") + Text(text).foregroundColor(color)
     }
     
     /// 格式化日期文本
-    static func date(_ date: Date, format: String = "yyyy-MM-dd") -> Text {
+    static func formattedDate(_ date: Date, format: String = "yyyy-MM-dd") -> Text {
         let formatter = DateFormatter()
         formatter.dateFormat = format
         return Text(formatter.string(from: date))
     }
     
     /// 格式化数字文本
-    static func number(_ number: Double, format: String = "%.2f") -> Text {
+    static func formattedNumber(_ number: Double, format: String = "%.2f") -> Text {
         return Text(String(format: format, number))
     }
     
     /// 格式化货币文本
-    static func currency(_ amount: Double, locale: Locale = .current) -> Text {
+    static func formattedCurrency(_ amount: Double, locale: Locale = .current) -> Text {
         let formatter = NumberFormatter()
         formatter.numberStyle = .currency
         formatter.locale = locale
@@ -377,34 +369,34 @@ public extension String {
         Text(self)
     }
     
-    /// 创建带样式的Text对象
-    func styledAsTitle(color: Color = .primary) -> Text {
-        Text(self).titleStyle(color: color)
+    /// 创建带标题样式的文本
+    func asStyledTitle(color: Color = .primary) -> some View {
+        Text(self).applyTitleStyle(color: color)
     }
     
-    /// 创建带副标题样式的Text对象
-    func styledAsSubtitle(color: Color = .secondary) -> Text {
-        Text(self).subtitleStyle(color: color)
+    /// 创建带副标题样式的文本
+    func asStyledSubtitle(color: Color = .secondary) -> some View {
+        Text(self).applySubtitleStyle(color: color)
     }
     
-    /// 创建带正文样式的Text对象
-    func styledAsBody(color: Color = .primary) -> Text {
-        Text(self).bodyStyle(color: color)
+    /// 创建带正文样式的文本
+    func asStyledBody(color: Color = .primary) -> some View {
+        Text(self).applyBodyStyle(color: color)
     }
     
-    /// 创建带链接样式的Text对象
-    func styledAsLink(color: Color = .blue) -> Text {
-        Text(self).linkStyle(color: color)
+    /// 创建带链接样式的文本
+    func asStyledLink(color: Color = .blue) -> some View {
+        Text(self).applyLinkStyle(color: color)
     }
     
-    /// 创建带错误样式的Text对象
-    func styledAsError() -> Text {
-        Text(self).errorStyle()
+    /// 创建带错误样式的文本
+    func asStyledError() -> some View {
+        Text(self).applyErrorStyle()
     }
     
-    /// 创建带成功样式的Text对象
-    func styledAsSuccess() -> Text {
-        Text(self).successStyle()
+    /// 创建带成功样式的文本
+    func asStyledSuccess() -> some View {
+        Text(self).applySuccessStyle()
     }
 }
 

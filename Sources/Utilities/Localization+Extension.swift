@@ -67,8 +67,7 @@ public extension Bundle {
     
     /// 当前应用支持的语言列表
     static var supportedLanguages: [String] {
-        guard let preferredLanguages = Bundle.main.localizations else { return [] }
-        return preferredLanguages
+        return Bundle.main.localizations
     }
     
     /// 当前应用的首选语言
@@ -172,10 +171,10 @@ public final class LanguageManager: @unchecked Sendable {
             currentLanguage = savedLanguage
         } else {
             // 使用系统语言或默认英语
-            let systemLang = systemLanguage.prefix(2).description
+            let systemLang = Locale.preferredLanguages.first?.prefix(2).description ?? "en"
             currentLanguage = Bundle.main.hasLocalization(for: systemLang) ? systemLang : "en"
         }
-        
+
         // 获取支持的语言列表
         supportedLanguages = Bundle.main.localizations.filter { $0 != "Base" }
     }
@@ -386,10 +385,10 @@ public extension Int64 {
         formatter.includesUnit = true
         formatter.isAdaptive = true
         formatter.allowedUnits = .useAll
-        formatter.locale = Locale(identifier: LanguageManager.shared.currentLanguage)
+        // ByteCountFormatter自动使用系统当前的语言环境，不需要手动设置locale
         return formatter.string(fromByteCount: self)
     }
-    
+
     /// 获取本地化的内存大小字符串
     var localizedMemorySize: String {
         let formatter = ByteCountFormatter()
@@ -397,7 +396,7 @@ public extension Int64 {
         formatter.includesUnit = true
         formatter.isAdaptive = true
         formatter.allowedUnits = .useAll
-        formatter.locale = Locale(identifier: LanguageManager.shared.currentLanguage)
+        // ByteCountFormatter自动使用系统当前的语言环境，不需要手动设置locale
         return formatter.string(fromByteCount: self)
     }
 }
@@ -422,7 +421,7 @@ public func isLocalizationAvailable(for key: String) -> Bool {
 // MARK: - 本地化调试工具
 
 /// 本地化调试器
-public final class LocalizationDebugger {
+public final class LocalizationDebugger: @unchecked Sendable {
     
     public static let shared = LocalizationDebugger()
     
