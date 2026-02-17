@@ -373,11 +373,11 @@ public extension Publisher {
     ///   - interval: 超时间隔（秒）
     ///   - scheduler: 调度器
     ///   - timeoutError: 超时错误
-    func timeout<Error: Swift.Error>(_ interval: TimeInterval,
+    func timeout<TimeoutError: Swift.Error>(_ interval: TimeInterval,
                                      scheduler: some Scheduler,
-                                     timeoutError: @escaping @autoclosure () -> Error) -> AnyPublisher<Output, Error> where Failure == Error {
-        self.setFailureType(to: Error.self)
-            .timeout(.seconds(interval), scheduler: scheduler, customError: timeoutError)
+                                     timeoutError: @escaping @autoclosure () -> TimeoutError) -> AnyPublisher<Output, TimeoutError> where Failure == TimeoutError {
+        // 当Failure已经与TimeoutError相同时，不需要setFailureType
+        self.timeout(.seconds(interval), scheduler: scheduler, customError: timeoutError)
             .eraseToAnyPublisher()
     }
     
@@ -401,36 +401,36 @@ public extension Publisher {
     /// - Parameters:
     ///   - initialResult: 初始值
     ///   - nextPartialResult: 累积函数
-    func scan<T>(_ initialResult: T, _ nextPartialResult: @escaping (T, Output) -> T) -> AnyPublisher<T, Failure> {
-        self.scan(initialResult, nextPartialResult)
+    func scanValues<T>(_ initialResult: T, _ nextPartialResult: @escaping (T, Output) -> T) -> AnyPublisher<T, Failure> {
+        return self.scan(initialResult, nextPartialResult)
             .eraseToAnyPublisher()
     }
-    
+
     /// 只在第一次满足条件时执行
     /// - Parameter condition: 条件判断函数
-    func first(where condition: @escaping (Output) -> Bool) -> AnyPublisher<Output, Failure> {
-        self.first(where: condition)
+    func firstElement(where condition: @escaping (Output) -> Bool) -> AnyPublisher<Output, Failure> {
+        return self.first(where: condition)
             .eraseToAnyPublisher()
     }
-    
+
     /// 只在最后一次满足条件时执行
     /// - Parameter condition: 条件判断函数
-    func last(where condition: @escaping (Output) -> Bool) -> AnyPublisher<Output, Failure> {
-        self.last(where: condition)
+    func lastElement(where condition: @escaping (Output) -> Bool) -> AnyPublisher<Output, Failure> {
+        return self.last(where: condition)
             .eraseToAnyPublisher()
     }
-    
+
     /// 忽略指定条件的值
     /// - Parameter condition: 条件判断函数
     func ignore(where condition: @escaping (Output) -> Bool) -> AnyPublisher<Output, Failure> {
-        self.filter { !condition($0) }
+        return self.filter { !condition($0) }
             .eraseToAnyPublisher()
     }
-    
+
     /// 映射到可选值，如果转换返回nil则跳过（重命名为compactMapResult避免冲突）
     /// - Parameter transform: 转换函数
     func compactMapResult<T>(_ transform: @escaping (Output) -> T?) -> AnyPublisher<T, Failure> {
-        self.compactMap(transform)
+        return self.compactMap(transform)
             .eraseToAnyPublisher()
     }
     
