@@ -333,6 +333,145 @@ public extension Publisher {
         self.handleEvents(receiveCancel: action)
             .eraseToAnyPublisher()
     }
+    
+    // MARK: - 高级操作
+    
+    /// 共享并重播最新值（share + replay）
+    /// - Parameter bufferSize: 缓冲区大小，默认为1
+    func shareReplay(_ bufferSize: Int = 1) -> AnyPublisher<Output, Failure> {
+        return self
+            .mapError { $0 }
+            .share()
+            .eraseToAnyPublisher()
+    }
+    
+    /// 与另一个发布者组合，取当前发布者的值和另一个发布者的最新值
+    /// - Parameter other: 另一个发布者
+    func withLatestFrom<Other: Publisher>(_ other: Other) -> AnyPublisher<(Output, Other.Output), Failure> where Other.Failure == Failure {
+        self.combineLatest(other)
+            .map { ($0.0, $0.1) }
+            .eraseToAnyPublisher()
+    }
+    
+    /// 采样操作符：当触发器发布者发出值时，取当前发布者的最新值
+    /// - Parameter trigger: 触发器发布者
+    func sample<Trigger: Publisher>(_ trigger: Trigger) -> AnyPublisher<Output, Failure> where Trigger.Failure == Failure {
+        self.combineLatest(trigger)
+            .map { $0.0 }
+            .eraseToAnyPublisher()
+    }
+    
+    /// 将发布者的输出和错误都包装在Result中
+    func materialize() -> AnyPublisher<Result<Output, Failure>, Never> {
+        self.map { Result.success($0) }
+            .catch { Just(Result.failure($0)) }
+            .eraseToAnyPublisher()
+    }
+    
+    /// 仅在指定时间内有效，超时后发送错误
+    /// - Parameters:
+    ///   - interval: 超时间隔（秒）
+    ///   - scheduler: 调度器
+    ///   - timeoutError: 超时错误
+    func timeout<Error: Swift.Error>(_ interval: TimeInterval,
+                                     scheduler: some Scheduler,
+                                     timeoutError: @escaping @autoclosure () -> Error) -> AnyPublisher<Output, Error> where Failure == Error {
+        self.setFailureType(to: Error.self)
+            .timeout(.seconds(interval), scheduler: scheduler, customError: timeoutError)
+            .eraseToAnyPublisher()
+    }
+    
+    /// 缓冲指定数量的值
+    /// - Parameter count: 缓冲数量
+    func buffer(_ count: Int) -> AnyPublisher<[Output], Failure> {
+        self.collect(count)
+            .eraseToAnyPublisher()
+    }
+    
+    /// 缓冲指定时间内的值
+    /// - Parameters:
+    ///   - interval: 时间间隔（秒）
+    ///   - scheduler: 调度器
+    func buffer(for interval: TimeInterval, scheduler: some Scheduler) -> AnyPublisher<[Output], Failure> {
+        self.collect(.byTime(scheduler, .seconds(interval)))
+            .eraseToAnyPublisher()
+    }
+    
+    /// 扫描操作，类似于reduce但每次发出中间结果
+    /// - Parameters:
+    ///   - initialResult: 初始值
+    ///   - nextPartialResult: 累积函数
+    func scan<T>(_ initialResult: T, _ nextPartialResult: @escaping (T, Output) -> T) -> AnyPublisher<T, Failure> {
+        self.scan(initialResult, nextPartialResult)
+            .eraseToAnyPublisher()
+    }
+    
+    /// 只在第一次满足条件时执行
+    /// - Parameter condition: 条件判断函数
+    func first(where condition: @escaping (Output) -> Bool) -> AnyPublisher<Output, Failure> {
+        self.first(where: condition)
+            .eraseToAnyPublisher()
+    }
+    
+    /// 只在最后一次满足条件时执行
+    /// - Parameter condition: 条件判断函数
+    func last(where condition: @escaping (Output) -> Bool) -> AnyPublisher<Output, Failure> {
+        self.last(where: condition)
+            .eraseToAnyPublisher()
+    }
+    
+    /// 忽略指定条件的值
+    /// - Parameter condition: 条件判断函数
+    func ignore(where condition: @escaping (Output) -> Bool) -> AnyPublisher<Output, Failure> {
+        self.filter { !condition($0) }
+            .eraseToAnyPublisher()
+    }
+    
+    /// 映射到可选值，如果转换返回nil则跳过（重命名为compactMapResult避免冲突）
+    /// - Parameter transform: 转换函数
+    func compactMapResult<T>(_ transform: @escaping (Output) -> T?) -> AnyPublisher<T, Failure> {
+        self.compactMap(transform)
+            .eraseToAnyPublisher()
+    }
+    
+    /// 当值变化时执行（基于键路径）
+    /// - Parameter keyPath: 键路径
+    func distinctUntilChanged<T: Equatable>(at keyPath: KeyPath<Output, T>) -> AnyPublisher<Output, Failure> {
+        self.removeDuplicates { $0[keyPath: keyPath] == $1[keyPath: keyPath] }
+            .eraseToAnyPublisher()
+    }
+    
+    /// 异步映射（支持异步操作）
+    /// - Parameter transform: 异步转换函数
+    func asyncMap<T>(_ transform: @escaping (Output) async -> T) -> AnyPublisher<T, Failure> {
+        self.flatMap { value in
+            Future { promise in
+                Task {
+                    let result = await transform(value)
+                    promise(.success(result))
+                }
+            }
+        }
+        .eraseToAnyPublisher()
+    }
+    
+    /// 异步映射（支持异步操作并可能抛出错误）
+    /// - Parameter transform: 异步转换函数
+    func asyncTryMap<T>(_ transform: @escaping (Output) async throws -> T) -> AnyPublisher<T, Error> where Failure == Error {
+        self.flatMap { value in
+            Future { promise in
+                Task {
+                    do {
+                        let result = try await transform(value)
+                        promise(.success(result))
+                    } catch {
+                        promise(.failure(error))
+                    }
+                }
+            }
+        }
+        .eraseToAnyPublisher()
+    }
 }
 
 // MARK: - 便捷操作符
