@@ -4,6 +4,7 @@
 #if canImport(UIKit)
 import UIKit
 
+@MainActor
 public extension UIViewController {
     
     // MARK: - 便捷属性

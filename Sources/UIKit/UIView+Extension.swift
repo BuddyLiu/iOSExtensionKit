@@ -4,6 +4,7 @@
 #if canImport(UIKit)
 import UIKit
 
+@MainActor
 public extension UIView {
     
     // MARK: - 布局扩展
