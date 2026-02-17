@@ -36,6 +36,14 @@ let package = Package(
             name: "iOSExtensionKit-Combine",
             targets: ["iOSExtensionKit-Combine"]
         ),
+        .library(
+            name: "iOSExtensionKit-Utilities",
+            targets: ["iOSExtensionKit-Utilities"]
+        ),
+        .library(
+            name: "iOSExtensionKit-Security",
+            targets: ["iOSExtensionKit-Security"]
+        ),
     ],
     targets: [
         // 完整库
@@ -105,6 +113,26 @@ let package = Package(
             ]
         ),
         
+        // Utilities 工具模块
+        .target(
+            name: "iOSExtensionKit-Utilities",
+            dependencies: [],
+            path: "Sources/Utilities",
+            swiftSettings: [
+                .define("IOSEXTENSIONKIT_UTILITIES"),
+            ]
+        ),
+        
+        // Security 安全模块
+        .target(
+            name: "iOSExtensionKit-Security",
+            dependencies: ["iOSExtensionKit-Foundation"],
+            path: "Sources/Security",
+            swiftSettings: [
+                .define("IOSEXTENSIONKIT_SECURITY"),
+            ]
+        ),
+        
         // 测试目标
         .testTarget(
             name: "iOSExtensionKitTests",
@@ -113,7 +141,9 @@ let package = Package(
                 "iOSExtensionKit-UIKit",
                 "iOSExtensionKit-SwiftUI",
                 "iOSExtensionKit-CoreGraphics",
-                "iOSExtensionKit-Combine"
+                "iOSExtensionKit-Combine",
+                "iOSExtensionKit-Utilities",
+                "iOSExtensionKit-Security"
             ],
             path: "Tests"
         ),

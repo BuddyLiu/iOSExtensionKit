@@ -19,15 +19,16 @@
 ### 📦 功能模块
 
 #### 1. Foundation 扩展
-- **String 扩展**: 字符串验证、转换、安全操作
-- **Date 扩展**: 日期计算、格式化、相对时间
-- **Array 扩展**: 集合操作、安全访问
-- **Dictionary 扩展**: 字典合并、安全取值
-- **Int/Double/Float 扩展**: 数值格式化、转换
-- **Bool 扩展**: 布尔值操作
+- **String 扩展**: 字符串验证、转换、安全操作、字符处理
+- **Date 扩展**: 日期计算、格式化、相对时间、时区处理
+- **Array 扩展**: 集合操作、安全访问、过滤映射
+- **Dictionary 扩展**: 字典合并、安全取值、键值操作
+- **Set 扩展**: 集合操作、安全交集并集差集、元素统计
+- **Int/Double/Float 扩展**: 数值格式化、转换、数学计算
+- **Bool 扩展**: 布尔值操作、逻辑运算
 - **URL 扩展**: URL构建、参数处理、安全访问
-- **Data 扩展**: 数据转换、加密、压缩
-- **Optional 扩展**: 安全解包、链式操作、错误处理
+- **Data 扩展**: 数据转换、加密、压缩、编码
+- **Optional 扩展**: 安全解包、链式操作、错误处理、空值检查
 
 #### 2. UIKit 扩展
 - **UIView 扩展**: 便捷的布局、样式、动画方法
@@ -46,11 +47,34 @@
 #### 5. CoreGraphics 扩展
 - **CGRect 扩展**: 几何计算、布局辅助
 
-#### 6. 工具类扩展
+#### 6. 安全扩展 (新增)
+- **字符串安全**: 数据加密、哈希计算、输入验证、敏感信息隐藏
+- **数据安全**: AES加密、Base64编码、安全随机数生成
+- **密钥链管理**: 安全的本地数据存储
+- **安全配置检查**: 越狱检测、调试检测、SSL验证检查
+- **安全工具**: 时序攻击防护、安全比较、安全延迟
+
+#### 7. 调试和日志工具 (新增)
+- **日志管理器**: 多级别日志记录（详细/调试/信息/警告/错误/严重）
+- **结构化日志**: 支持OSLog结构化日志
+- **日志文件输出**: 支持日志文件存储和导出
+- **调试辅助工具**: 安全断言、性能测量、错误处理
+- **调试信息收集**: 系统信息收集、内存监控、性能监控
+- **调试宏**: 仅在调试模式下有效的便捷宏
+
+#### 8. 国际化/本地化扩展 (新增)
+- **本地化字符串**: 便捷的本地化字符串访问和格式化
+- **语言管理器**: 动态语言切换、RTL支持
+- **本地化格式化**: 日期、数字、货币、文件大小的本地化显示
+- **本地化调试**: 本地化键使用情况跟踪和报告
+- **安全本地化**: 防止本地化缺失导致的应用崩溃
+
+#### 9. 工具类扩展
 - **设备扩展**: 设备信息、屏幕适配
 - **网络扩展**: URL请求、JSON处理
 - **性能计时器**: 代码性能分析
 - **文件管理**: 文件操作扩展
+- **性能优化器**: 缓存管理、内存优化、性能监控（新增）
 
 ## 安装
 
@@ -261,6 +285,20 @@ EXK.initialize()
 - `chineseDateString` - 中文日期格式化
 - `relativeTimeString` - 相对时间描述
 
+#### Set 扩展
+- `intersection(safe:)` / `union(safe:)` - 安全的集合操作
+- `subtracting(safe:)` / `symmetricDifference(safe:)` - 安全的集合差集和对称差集
+- `contains(all:)` / `contains(any:)` - 检查包含所有或任意元素
+- `filterSet()` / `mapSet()` / `compactMapSet()` - 集合过滤映射
+- `disjoint()` / `subset()` / `superset()` - 集合关系检查
+- `strictSubset()` / `strictSuperset()` - 真子集/真超集检查
+- `toArray` / `toSortedArray()` - 转换为数组
+- `grouped(by:)` / `toDictionary()` - 集合分组和字典转换
+- `partitioned(by:)` - 集合分区
+- `count(where:)` / `proportion(where:)` / `percentage(where:)` - 元素统计
+- `sum` / `product` / `average()` - 数值计算（数值元素）
+- `minElement` / `maxElement` / `minAndMax` - 最小/最大元素（可比较元素）
+
 #### UIView 扩展
 - `parentViewController` - 获取父控制器
 - `addSubviews(_:)` - 批量添加子视图
@@ -285,25 +323,63 @@ EXK.initialize()
 iOSExtensionKit/
 ├── Sources/
 │   ├── iOSExtensionKit.swift          # 主入口文件
-│   ├── Foundation/
+│   ├── Foundation/                    # Foundation扩展
 │   │   ├── String+Extension.swift     # 字符串扩展
-│   │   └── Date+Extension.swift       # 日期扩展
-│   ├── UIKit/
+│   │   ├── Date+Extension.swift       # 日期扩展
+│   │   ├── Array+Extension.swift      # 数组扩展
+│   │   ├── Dictionary+Extension.swift # 字典扩展
+│   │   ├── Set+Extension.swift        # 集合扩展
+│   │   ├── Int+Extension.swift        # 整数扩展
+│   │   ├── Double+Extension.swift     # 双精度扩展
+│   │   ├── Float+Extension.swift      # 浮点数扩展
+│   │   ├── Bool+Extension.swift       # 布尔值扩展
+│   │   ├── URL+Extension.swift        # URL扩展
+│   │   ├── Data+Extension.swift       # 数据扩展
+│   │   └── Optional+Extension.swift   # 可选值扩展
+│   ├── UIKit/                         # UIKit扩展
 │   │   ├── UIView+Extension.swift     # UIView扩展
-│   │   └── UIViewController+Extension.swift
-│   ├── SwiftUI/
+│   │   ├── UIViewController+Extension.swift
+│   │   └── UIColor+Extension.swift    # 颜色扩展
+│   ├── SwiftUI/                       # SwiftUI扩展
 │   │   ├── View+Extension.swift       # View扩展
 │   │   └── Color+Extension.swift      # 颜色扩展
-│   └── Utilities/
-│       ├── Device+Extension.swift     # 设备扩展
-│       └── Color+Extension.swift      # 颜色工具
+│   ├── CoreGraphics/                  # CoreGraphics扩展
+│   │   └── CGRect+Extension.swift     # 矩形扩展
+│   ├── Combine/                       # Combine扩展
+│   │   └── Publisher+Extension.swift  # 发布者扩展
+│   ├── Security/                      # 安全扩展（新增）
+│   │   └── Security+Extension.swift   # 安全工具扩展
+│   ├── Utilities/                     # 工具类扩展
+│   │   ├── Device+Extension.swift     # 设备扩展
+│   │   ├── Date+Extension.swift       # 日期工具扩展
+│   │   ├── FileManager+Extension.swift # 文件管理扩展
+│   │   ├── UserDefaults+Extension.swift # 用户偏好扩展
+│   │   ├── NotificationCenter+Extension.swift # 通知中心扩展
+│   │   ├── DispatchQueue+Extension.swift # 队列扩展
+│   │   ├── PerformanceTimer.swift     # 性能计时器
+│   │   ├── PerformanceOptimizer.swift # 性能优化器（新增）
+│   │   ├── Debug+Extension.swift      # 调试和日志工具（新增）
+│   │   └── Localization+Extension.swift # 国际化/本地化扩展（新增）
+│   └── Animation/                     # 动画扩展
+│       └── UIView+Animation.swift     # UIView动画扩展
 ├── Tests/
 │   └── iOSExtensionKitTests/
 │       ├── StringExtensionTests.swift
-│       └── UIViewExtensionTests.swift
-├── Package.swift                      # SPM 配置文件
+│       ├── DoubleFloatExtensionTests.swift
+│       ├── UserDefaultsExtensionTests.swift
+│       ├── SetExtensionTests.swift
+│       ├── PerformanceTests.swift
+│       └── DispatchQueueExtensionTests.swift
+├── Examples/                          # 示例代码（新增）
+│   ├── Foundation/                    # Foundation示例
+│   │   └── FoundationExamples.swift   # Foundation扩展示例
+│   ├── UIKit/                         # UIKit示例
+│   └── SwiftUI/                       # SwiftUI示例
+├── Resources/                         # 资源文件
+├── benchmarks.md                      # 性能基准测试
+├── Package.swift                      # SPM配置文件
 ├── README.md                          # 项目文档
-└── LICENSE                           # MIT 许可证
+└── LICENSE                           # MIT许可证
 ```
 
 ## 贡献指南
